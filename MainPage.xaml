@@ -11,10 +11,11 @@
                     FontAttributes="Bold"
                     HorizontalOptions="Center"
                     Text="Errores: "/>
+                <Image HeightRequest="200" Source="{Binding CurrentImage}"/>
                 <Label
                     FontSize="40"
                     HorizontalOptions="Center"
-                    Text="_ _ _ _ _ _"
+                    Text="{Binding SpotLight}"
                     VerticalOptions="Center"/>
                 <Label
                     FontSize="Large"
