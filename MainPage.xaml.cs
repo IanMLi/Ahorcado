@@ -22,7 +22,10 @@ public partial class MainPage : ContentPage
 	#region Fields
 	
 		private List<char> letras = new List<char>();  //Inicializa los valores del teclado
+            
 	
+		private string currentImage = ""
+		
 	#endregion
 
 	//Constructor para invocar todos los elementos
