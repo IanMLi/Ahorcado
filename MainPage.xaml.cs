@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
 using System.Windows.Markup;
+using Android.OS;
+using Google.Android.Material.BottomNavigation;
+using Debug = System.Diagnostics.Debug;
 
 namespace Ahoracado_74599;
 
@@ -19,7 +21,8 @@ public partial class MainPage : ContentPage, INotifyPropertyChanged
 
 		public string Currentimage {
 			get => currentimage;
-			set{
+			set
+			{
 				currentimage = value;
 				OnPropertyChanged();
 			}
@@ -29,12 +32,33 @@ public partial class MainPage : ContentPage, INotifyPropertyChanged
 		{
 			get => spotlight;
 			set
-		{
-			spotlight = value;
-			OnPropertyChanged();
+			{
+				spotlight = value;
+				OnPropertyChanged();
+			}
 		}
-	}
 
+		public string GameStatus
+		{
+			get => gameStatus;
+			set
+			{
+				gameStatus = value;
+				OnPropertyChanged();
+			}
+		}
+
+		//Mensaje del juego para mostrar status deljuego
+		public string Mensaje
+		{
+			get => mensaje;
+			set
+			{
+				mensaje = value;
+				OnPropertyChanged();
+			}
+		}
+		
 	#endregion 
 
 	// Region para onfigurar los campos de la app
@@ -70,6 +94,8 @@ public partial class MainPage : ContentPage, INotifyPropertyChanged
 	int maxWrong = 6;
 
 	private string spotlight;
+	
+	private string gameStatus;
 
 	#endregion
 
@@ -92,12 +118,26 @@ public partial class MainPage : ContentPage, INotifyPropertyChanged
 
     // Manejo del boton de reiniciar Juego
     private void Reset_Clicked(object sender, EventArgs e){
-
-	}
+		mistakes = 0; //reinicia el contador del juego
+		guessed = new List<char>(); 
+		currentimage = "Horca.png"; //Vuelve a poner la imagen
+		PickWord(); //Invoca la palabra aleatoria
+		CalculateWords(respuesta, guessed); //invoca las letras
+		Mensaje = ""; //Borra el mensaje 
+		UpdateStatus();
+		EnableLetters();
+    }
 
 // Manejador del boton del teclado
-	private void Button_Clicked(object sender, EventArgs e){
-		
+	private void Button_Clicked(object sender, EventArgs e)
+	{
+		var btn = sender as Button; //Indica que es un boton
+		if (btn != null)  //Valida si el boton es nulo y pertenece al teclado
+		{
+			var letter = btn.Text; //Toma el valor de la letra
+			btn.IsEnabled = false; //Bloquea el boton
+			HandleGuess(letter[0]);
+		}
 	}
 
 	#region Game Engine
@@ -150,7 +190,7 @@ public partial class MainPage : ContentPage, INotifyPropertyChanged
 	private void  CheckIfGameLost(){
 		if (mistakes == maxWrong)
 		{
-			mensaje = "fucking Hamaa"; // mensaje 
+			mensaje = "Hail Hittler"; // mensaje 
 			DisableLetters();// bloque llas letras 
 		}
 	}
@@ -166,6 +206,23 @@ public partial class MainPage : ContentPage, INotifyPropertyChanged
 				btn.IsEnabled = false;
 			}
 		}
+	}
+
+	private void EnableLetters()
+	{
+		foreach (var children in LettersContainer.Children)
+		{
+			var btn = children as Button;
+			if (btn != null)
+			{
+				btn.IsEnabled = true;
+			}
+		}
+	}
+
+	private void UpdateStatus()
+	{
+		GameStatus = $"Errores: {mistakes} of {maxWrong}";
 	}
 	
 	#endregion
