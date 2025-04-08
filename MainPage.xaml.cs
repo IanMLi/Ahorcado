@@ -1,121 +1,172 @@
-﻿using System.Diagnostics;
-using System.ComponentModel;
-using System.Security.AccessControl;
+﻿using System.ComponentModel;
+using System.Data;
+using System.Diagnostics;
+using System.Windows.Markup;
 
 namespace Ahoracado_74599;
 
-public partial class MainPage : ContentPage
+public partial class MainPage : ContentPage, INotifyPropertyChanged
 {
-	//Regio para configurar las propiedades de IU Elementos de enlace
+	// Region PARA CONFIGURAR LAS PROIEDADES DE IU ELEMENTOS DE 
 	#region IU
-	
-	//Enlace para crear el teclado de la app
-	public List<char> Letters
-	{
-		get => letras;
-		set
-		{
-			letras = value;
-			OnPropertyChanged();
+		public List<char> Letters{
+			get => letras;
+			set {
+				letras = value;
+				OnPropertyChanged();
+			}
 		}
-	}
 
-	public string CurrentImage
-	{
-		get => currentimage;
-		set
-		{
-			currentimage = value;
-			OnPropertyChanged();
+		public string Currentimage {
+			get => currentimage;
+			set{
+				currentimage = value;
+				OnPropertyChanged();
+			}
 		}
-	}
-	
-	//enlace para visualizar los guiones de las letras de la palabra
-	public string SpotLight
-	{
-		get => spotlight;
-		set
+
+		public string SpotLight 
+		{
+			get => spotlight;
+			set
 		{
 			spotlight = value;
 			OnPropertyChanged();
 		}
 	}
 
-	#endregion
-	
-	//Region para configurar los campos de la app
+	#endregion 
+
+	// Region para onfigurar los campos de la app
 	#region Fields
-	
+
 	List<string> words = new List<string>()
-	{
-		"python",
-		"javascript",
-		"maui",
-		"csharp",
-		"mongodb",
-		"sql",
-		"xaml",
-		"word",
-		"excel",
-		"powerpoint",
-		"code",
-		"hotreload",
-		"snippets"
-	};
-	
-		private List<char> letras = new List<char>();  //Inicializa los valores del teclado
-		
-		
-		private string currentimage = "Horca.png"; //Imagen inicial
+     {
+        "python",
+        "javascript",
+        "maui",
+        "csharp",
+        "mongodb",
+        "sql",
+        "xaml",
+        "word",
+        "excel",
+        "powerpoint",
+        "code",
+        "hotreload",
+        "snippets"
+     };
+	private List <char> letras = new List <char> ();
+	private string currentimage = "Horca.png";
 
-		string respuesta = ""; //Palabra aleatoria
+	string respuesta ="";
 
-		private string spotlight; //Letras de la palabra
-		
-		List<char> guessed = new List<char>(); //palabra a adivinar
-		
-		
-		
+	List<char> guessed = new List<char>();
+
+	private string mensaje;
+
+	int mistakes = 0;
+
+	int maxWrong = 6;
+
+	private string spotlight;
+
 	#endregion
 
-	//Constructor para invocar todos los elementos
+	// Constructor para incovar todos los elementos
+
 	public MainPage()
 	{
 		InitializeComponent();
-		Letters.AddRange("abcdefghijklmnopqrstuvwxyz"); //Valores del teclado
-		BindingContext = this; //Invocar todos los enlaces necesarios
-		PickWord(); //Invocar palabra aleatoria
-		CalculateWord(respuesta, guessed); //Invoca el calculo de las letras
+		Letters.AddRange("abcdefghijklmnñopqrstuvwxyz"); // valores del teclado
+		BindingContext = this;
+		PickWord();
+		CalculateWords(respuesta, guessed);
 	}
-	
-//manejador del boton de reiniciar juego
-	private void Reset_cliked(object sender, EventArgs e){
-		
+
+    private void CalculateWords()
+    {
+        throw new NotImplementedException();
+    }
+
+
+    // Manejo del boton de reiniciar Juego
+    private void Reset_Clicked(object sender, EventArgs e){
+
 	}
-	
-	//manejador del boton del teclado
-	private void Button_cliked(object sender, EventArgs e){
+
+// Manejador del boton del teclado
+	private void Button_Clicked(object sender, EventArgs e){
 		
 	}
 
 	#region Game Engine
-	//Metodo de seleccion aleatoria
-
-	public void PickWord()
-	{
-		respuesta = words[new Random().Next(0, words.Count)];
+	public void PickWord(){
+		respuesta = words[new Random().Next(0,words.Count)];
 		Debug.WriteLine(respuesta);
 	}
+	public void CalculateWords(string respuesta ,List<char> guessed){
+		var tem = 
+			respuesta.Select(x => (guessed.IndexOf(x)>= 0, '_'))
+			.ToArray();
+			spotlight=string.Join(' ',tem);
+	}
 
-	//Calcular la longitud de la palabra
-	public void CalculateWord(string respuesta, List<char> guessed)
+
+    private void CalculateWord(string respuesta, List<char> guessed)
+    {
+        throw new NotImplementedException();
+    }
+
+	
+	private void HandleGuess(char letter){
+		if (guessed.IndexOf(letter) == -1)
+		{
+			guessed.Add(letter);
+		}
+		if (respuesta.IndexOf(letter) >=0 )
+		{
+			CalculateWord(respuesta, guessed);
+			ChekIfGameWon();
+
+		}
+		else if (respuesta.IndexOf(letter) == -1)
+		{
+			mistakes++;
+			UpdateStatus();
+			CheckIfGameLost();
+			Currentimage = $"Cabeza{mistakes}.png";// agregar imagen
+		}
+	}
+// metodo que evalua si ganas las partida 
+	private void ChekIfGameWon(){
+		if (SpotLight.Replace(" "," ") == respuesta)
+		{
+			mensaje = "Win";
+			DisableLetters();
+		}
+	}
+// metodo que evalua si pierde la partida 
+	private void  CheckIfGameLost(){
+		if (mistakes == maxWrong)
+		{
+			mensaje = "fucking Hamaa"; // mensaje 
+			DisableLetters();// bloque llas letras 
+		}
+	}
+	
+// metodo para desabilitar las letras
+	private void DisableLetters()
 	{
-		var temp =
-			respuesta.Select(x => (guessed.IndexOf(x) >= 0, '_')).ToArray();
-		spotlight = string.Join(' ', temp);
-
+		foreach (var children in LettersContainer.Children)
+		{
+			var btn = children as Button;
+			if (btn != null)
+			{
+				btn.IsEnabled = false;
+			}
+		}
 	}
 	
 	#endregion
 }
-

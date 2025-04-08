@@ -5,44 +5,48 @@
              Shell.NavBarIsVisible="False">
 
     <!-- main page -->
-        <Grid RowDefinitions=".6*,.4*">
-            <VerticalStackLayout>
-                <Label
-                    FontAttributes="Bold"
-                    HorizontalOptions="Center"
-                    Text="Errores: "/>
-                <Image HeightRequest="200" Source="{Binding CurrentImage}"/>
-                <Label
-                    FontSize="40"
-                    HorizontalOptions="Center"
-                    Text="{Binding SpotLight}"
-                    VerticalOptions="Center"/>
-                <Label
-                    FontSize="Large"
-                    HorizontalTextAlignment="Center"
-                    Text="Mensaje"/>
-                <Button
-                    HorizontalOptions="Center"
-                    Text="Reset"
-                    WidthRequest="100"
-                    Clicked="Reset_cliked"/>
-            </VerticalStackLayout>
-            <FlexLayout
-                x:Name="Contenedor"
-                Grid.Row="1"
-                JustifyContent="SpaceBetween"
-                Wrap="Wrap"
-                BindableLayout.ItemsSource="{Binding Letters}">
-                <BindableLayout.ItemTemplate>
-                    <DataTemplate>
-                        <Button
-                            Clicked="Button_cliked"
-                            HeightRequest="50"
-                            Text="{Binding .}"
-                            WidthRequest="50"/>
-                    </DataTemplate>
-                </BindableLayout.ItemTemplate>
-            </FlexLayout>
-        </Grid>
+    <Grid RowDefinitions=".6*, .4*">
+        <VerticalStackLayout>
+            <Label 
+                FontAttributes="Bold"
+                HorizontalOptions="Center"
+                Text="Errores"/>
+            <Image HeightRequest="200" Source="{Binding CurrentImage}"/>    
+            <Label
+                FontSize="40"
+                HorizontalOptions="Center"
+                Text="{Binding SpotLight}"/>
+            <Label
+                FontSize="Large"
+                HorizontalTextAlignment="Center"
+                Text="Menaje"/>
+            <Button
+                HorizontalOptions="Center"
+                Text="Reset"
+                WidthRequest="100"
+                Clicked="Reset_Clicked"/>
+                       
+        </VerticalStackLayout>
+
+        <FlexLayout
+            x:Name="Contenedor"
+            Grid.Row="1"
+            JustifyContent="SpaceEvenly"
+            Wrap="Wrap"
+            BindableLayout.ItemsSource="{Binding Letters}">
+
+            <BindableLayout.ItemTemplate>
+                <DataTemplate>
+                    <Button
+                        Clicked="Button_Clicked"
+                        HeightRequest="50"
+                        Text="{Binding}"
+                        WidthRequest="50"/>
+
+                </DataTemplate>
+            </BindableLayout.ItemTemplate>            
+        </FlexLayout>
+    </Grid>
+
 
 </ContentPage>
